@@ -1,0 +1,13 @@
+{
+  "name": "client",
+  "version": "1.0.0",
+  "description": "Web client for cardgame",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app",
+    "watch": "webpack --progress --colors --watch & sass --watch style:static/style",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
