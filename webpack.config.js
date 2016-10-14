@@ -1,3 +1,5 @@
+ let webpack = require('webpack');
+ 
  module.exports = {
      entry: './js/index.js',
      output: {
@@ -10,5 +12,16 @@
             exclude: /node_modules/,
             loader: 'babel-loader'
         }]
+     },
+     plugins: [
+        new webpack.DefinePlugin({
+          'process.env':{
+            'NODE_ENV': JSON.stringify('production')
+          }
+        }),
+     ],
+     externals: {
+         "react": "React",
+         "react-dom": "ReactDOM"
      }
  };
