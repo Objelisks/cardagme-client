@@ -1,7 +1,10 @@
 let React = require('react');
-let DraggableCore = require('react-draggable').DraggableCore;
-let Motion = require('react-motion').Motion;
-let spring = require('react-motion').spring;
+let redux = require('react-redux');
+let Card = require('./card.js');
+let {DraggableCore} = require('react-draggable');
+let {Motion, spring} = require('react-motion');
+
+let {moveAction} = require('../js/actions.js');
 
 let resetSpring = {stiffness: 100, damping: 20};
 let dragSpring = {stiffness: 500, damping: 50};
@@ -29,6 +32,20 @@ let Draggable = ChildClass => React.createClass({
             x: data.x,
             y: data.y
         });
+        
+        // get the zone we dragged into
+        let target = e.target;
+        let oldVis = target.style.visibility;
+        target.style.visibility = "hidden";
+        let element = document.elementFromPoint(e.clientX, e.clientY);
+        while(element && (!element.classList || !element.classList.contains('zone'))) {
+            element = element.parentNode;
+        }
+        target.style.visibility = oldVis;
+        
+        if(element && element.classList && element.classList.contains('zone')) {
+            this.props.dispatch(moveAction({id: target.getAttribute('data-gameid'), target: element.getAttribute('data-gameid')}));
+        }
     },
     render: function() {
         let {x, y} = this.props.pos || {x: 0, y: 0};
@@ -69,4 +86,6 @@ let Draggable = ChildClass => React.createClass({
     }
 });
 
-module.exports = Draggable;
+let DraggableCard = redux.connect()(Draggable(Card));
+
+module.exports.DraggableCard = DraggableCard;

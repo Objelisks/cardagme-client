@@ -1,10 +1,9 @@
 let React = require('react');
 
-module.exports = React.createClass({
-    displayName:'Card',
-    render: function() {
-        return (
-            <div {...this.props} className={"card " + this.props.className}></div>
-        );
-    }
-})
+let Card = (props) => {
+    return (
+        <div {...props} data-gameid={props.card.id} className={'card ' + (props.className || '')}></div>
+    );
+};
+
+module.exports = Card;
