@@ -1,2 +1,2 @@
-# cardagme-client
+# cardgame-client
 Web client for cardgame

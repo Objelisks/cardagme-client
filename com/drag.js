@@ -34,15 +34,19 @@ let Draggable = ChildClass => React.createClass({
         });
         
         // get the zone we dragged into
+        // hide the dragged card
         let target = e.target;
         let oldVis = target.style.visibility;
         target.style.visibility = "hidden";
+        // get the thing we're hovering over
         let element = document.elementFromPoint(e.clientX, e.clientY);
         while(element && (!element.classList || !element.classList.contains('zone'))) {
+            // go up the tree until we find a zone
             element = element.parentNode;
         }
         target.style.visibility = oldVis;
         
+        // if we found a zone, move the dragged card to it
         if(element && element.classList && element.classList.contains('zone')) {
             this.props.dispatch(moveAction({id: target.getAttribute('data-gameid'), target: element.getAttribute('data-gameid')}));
         }

@@ -5,5 +5,12 @@ module.exports.moveAction = ({id, target}) => {
         type: actionTypes.MOVE,
         id,
         target
-    }
-}
+    };
+};
+
+module.exports.menuAction = ({pos}) => {
+    return {
+        type: actionTypes.MENU,
+        pos
+    };
+};

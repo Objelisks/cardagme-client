@@ -20,13 +20,13 @@ let Deck = (props) => {
             <div {...deckProps} >
                 {restCards.map((card, i) => <Card key={card.id} card={card} style={{top: -i*2+8, left: -i*2+8}}></Card>)}
                 <DraggableCard key={topCard.id} card={topCard} pos={{y: -restCards.length*2+8, x: -restCards.length*2+8}}></DraggableCard>
-                <p style={{top: 250, left: 90, position: 'relative'}}>deck</p>
+                <p>deck</p>
             </div>
         );
     } else { // deck is empty
         return (
             <div {...deckProps} >
-                <p style={{top: 250, left: 90, position: 'relative'}}>deck</p>
+                <p>deck</p>
             </div>
         );
     }

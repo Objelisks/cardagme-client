@@ -1,3 +1,7 @@
+// vary-ables
+$cardHeight: 250px;
+$cardWidth: 200px;
+
 body {
     margin: 0px;
 }
@@ -5,34 +9,41 @@ body {
 .card {
     border: 1px solid black;
     position: absolute;
-    width: 200px;
-    height: 250px;
+    width: $cardWidth;
+    height: $cardHeight;
     background-color: #fff;
     z-index: 1;
+    transition: transform 1s;
 }
 
 .draggable {
     transition: box-shadow 0.1s;
-}
-
-.draggable:hover {
-    box-shadow: 0px 0px 10px mediumslateblue;
+    &:hover {
+        box-shadow: 0px 0px 10px mediumslateblue;
+    }
 }
 
 .held {
+    transition: transform 0s;
     box-shadow: 6px 6px 6px rgba(0,0,0,0.5);
     z-index: 100;
 }
 
-.deck {
+.zone {
     border: 1px dashed black;
     border-radius: 6px;
-    width: 220px;
-    height: 290px;
+    text-align: center;
+    p {
+        top: $cardHeight;
+        position: relative;
+    }
+}
+
+.deck {
+    width: $cardWidth + 20px;
+    height: $cardHeight + 40px;
 }
 
 .hand {
-    border: 1px dashed black;
-    border-radius: 6px;
-    height: 290px;
+    height: $cardHeight + 40px;
 }
