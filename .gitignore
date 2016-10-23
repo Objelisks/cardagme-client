@@ -1,3 +1,4 @@
-static/bin/app.bundle.*
+static/bin/app.bundle.js
+static/bin/app.bundle.js.map
 static/style/index.css
 static/style/index.css.map

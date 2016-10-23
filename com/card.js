@@ -7,10 +7,11 @@ let handleClick = function(props) {
     return function(e) {
         if(e.button === 2) {
             e.preventDefault();
-            props.dispatch(actions.menuAction({pos: {x: e.clientX, y: e.clientY}}));
+            e.stopPropagation();
+            props.dispatch(actions.menuAction({card: props.card.id, pos: {x: e.clientX, y: e.clientY}, menuType: 'hand-context'}));
         }
-    }
-}
+    };
+};
 
 let Card = (props) => {
     return (

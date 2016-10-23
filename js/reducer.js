@@ -16,8 +16,8 @@ let initialZones = {
    10: {id: '10', name:'deck', type:'deck', pos:{x: 100, y: 400}, cards: ['1', '2', '3', '4']},
    11: {id: '11', name:'hand', type:'hand', pos:{x: 400, y: 450}, cards: ['5', '6', '7', '8', '9']}
 };
-let initialMenus = { 
-   // 12: {id: '12', type: 'card-context', pos:{x:100, y:200}}
+let initialMenus = {
+   // 12: {id: '12', menuType: 'card-context', pos:{x:100, y:200}}
 };
 
 let cards = (state = initialCards, action) => {
@@ -26,8 +26,7 @@ let cards = (state = initialCards, action) => {
 let zones = (state = initialZones, action) => {
    switch(action.type) {
       case actions.MOVE:
-         let newState = Object.assign({},
-            state, 
+         let newState = Object.assign({}, state, 
             Object.keys(state).reduce((pre, zoneId) => {
                let zone = state[zoneId];
                if(zoneId !== action.target) {
@@ -44,14 +43,46 @@ let zones = (state = initialZones, action) => {
    return state;
 };
 
+let genMenuId = (() => {
+  let id = 0;
+  return () => {
+     id += 1;
+     return `menu${id}`;
+  }
+})();
+
 let menus = (state = initialMenus, action) => {
+   let newState, id;
    switch(action.type) {
       case actions.MENU:
-         let id = 12;
-         let newState = Object.assign({},
-            state,
-            {[id]: {id: id, type:'card-context', pos: action.pos}});
+         id = action.id || genMenuId();
+         newState = Object.assign({}, state,
+            {[id]: Object.assign({id: id}, action)});
          return newState;
+      case actions.MENU_CHILD:
+         id = action.id;
+         if(action.cancel) {
+            newState = Object.assign({}, state,
+               {[id]: Object.assign({}, state[id], {child: undefined})});
+         } else {
+            newState = Object.assign({}, state,
+               {[id]: Object.assign({}, state[id], {child: action})});
+         }
+         
+         return newState;
+      case actions.MENU_CANCEL:
+         if(action.id) {
+            // remove specific menu
+            return Object.keys(state).reduce((pre, menuId) => {
+               if(action.id !== menuId) {
+                  pre[menuId] = state[menuId];
+               }
+               return pre;
+            }, {});
+         } else {
+            // remove all menus
+            return {};
+         }
    }
    return state;
 };
