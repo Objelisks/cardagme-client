@@ -2,22 +2,20 @@ let React = require('react');
 let redux = require('react-redux');
 let actions = require('../js/actions.js');
 let Zone = require('./zone.js');
-let Menu = require('./menu.js');
-
-let host = 'localhost:8082';
-
-let networker = require('../js/networker.js');
-networker.connect(host);
+let Card = require('./card.js');
+let {Menu} = require('./menu.js');
 
 let onClick = function(props) {
     return (e) => {
-        e.preventDefault();
+        // close all menus when clicking on the background
         props.dispatch(actions.menuCancelAction());
+        e.preventDefault();
     };
 };
 
 let GameArea = (props) => {
     let {cards, zones, menus} = props;
+    
     let zoneElements = Object.keys(zones).map(zoneId => {
         let zone = zones[zoneId];
         return <Zone {...zone} key={zone.id} cards={zone.cards.map(cardId => cards[cardId])}></Zone>;
@@ -28,15 +26,22 @@ let GameArea = (props) => {
         return <Menu {...menu} key={menu.id}></Menu>;
     });
     
+    let cardPreviewId = Object.keys(cards).filter(id => cards[id].preview)[0];
+    let cardPreview = undefined;
+    if(cardPreviewId) {
+        cardPreview = <Card card={cards[cardPreviewId]} style={{top: 8, left: 8}}></Card>;
+    }
+    
     return (
         <div onMouseDown={onClick(props)} onContextMenu={onClick(props)} className="game">
             {zoneElements}
             {menuElements}
+            {cardPreview}
         </div>
     );
 };
 
-let ConnectedGameArea = redux.connect(
+let ActiveGameArea = redux.connect(
     (state) => {
         return {
             cards: state.cards,
@@ -45,4 +50,4 @@ let ConnectedGameArea = redux.connect(
         }
     })(GameArea);
 
-module.exports = ConnectedGameArea;
+module.exports = ActiveGameArea;

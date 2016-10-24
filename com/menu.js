@@ -3,103 +3,120 @@ let redux = require('react-redux');
 let actions = require('../js/actions.js');
 
 let menuWidth = 84;
+let menuItemHeight = 20;
 
-let menuTypes = {
-    'hand-context': [
-        {text:'play card', click: (props) => {
-            return (e) => {
-                console.log('play card', props.card);
-            }
-        }, default: true},
-        {text:'change zone',
-        over: (props) => {
-            return (e) => {
-                props.dispatch(actions.menuChildAction({
-                    id: props.id,
-                    card: props.card,
-                    index: 1,
-                    pos: {x: menuWidth, y: -23},
-                    menuType: 'zone-context'}));
-            }
+let changeZone = (props) => {
+    return {
+        text:'change zone',
+        onMouseEnter: (e) => {
+            props.dispatch(actions.menuChildAction({
+                id: props.id,
+                card: props.card,
+                index: 1,
+                pos: {x: menuWidth, y: -3 - menuItemHeight},
+                zones: props.zones,
+                menuType: 'zone-context'}));
         },
-        out: (props) => {
-            return (e) => {
-                props.dispatch(actions.menuChildAction({
-                    id: props.id,
-                    cancel: true}));
-            }
+        onMouseLeave: (e) => {
+            props.dispatch(actions.menuChildAction({
+                id: props.id,
+                cancel: true}));
         },
-        click: (props) => {
-            return (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-        }},
-        {text:'reveal card', click: (props) => {
-            return (e) => {
-                console.log('reveal card', props.card);
-            }
-        }}
-    ],
-    'deck-context': [
-        {text:'draw card', click: (props) => {
-            return (e) => {
-                console.log('play card');
-            }
-        }, default: true},
-        {text:'shuffle deck', click: (props) => {
-            return (e) => {
-                console.log('play card');
-            }
-        }}
-    ],
-    'zone-context': [
-        {text: 'deck', click: (props) => {
-            return (e) => {
-                console.log(`card ${props.card.id} to deck`);
-                props.dispatch(actions.menuCancelAction());
-            }
-        }},
-        {text: 'hand', click: (props) => {
-            return (e) => {
-                console.log(`card ${props.card.id} to hand`);
-                props.dispatch(actions.menuCancelAction());
-            }
-        }},
-    ]
+        onMouseDown: (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        }};
 };
+
+let menuTypes = (props) => {
+    return {
+    'hand': [
+        {text:'play card',
+        onMouseDown: (e) => {
+            console.log('play card', props.card);
+        }, default: true},
+        
+        changeZone(props),
+        
+        {text:'reveal card',
+        onMouseDown: (e) => {
+            console.log('reveal card', props.card);
+        }}
+    ],
+    
+    'deck': [
+        {text:'draw card',
+        onMouseDown: (e) => {
+            console.log('draw card');
+            // gets first hand zone (todo: get first hand zone owned by player)
+            let handZoneId = Object.keys(props.zones).filter(id => props.zones[id].type === 'hand')[0];
+            props.dispatch(actions.moveAction({id: props.card, target: handZoneId}));
+        }, default: true},
+        
+        changeZone(props),
+        
+        {text:'shuffle deck',
+        onMouseDown: (e) => {
+            console.log('shuffle deck');
+        }}
+    ],
+    
+    // dynamic submenu contains each available zone
+    'zone-context': (() => {
+        let movableZones = Object.keys(props.zones)
+            .filter(zId => props.zones[zId].moveToAble && props.zones[zId].cards.indexOf(props.card) === -1)
+            .map(zId => props.zones[zId]);
+        return movableZones.map(zone => {
+            return {
+                text: zone.name,
+                onMouseDown: (e) => {
+                    console.log(`card ${props.card} to ${zone.name}`);
+                    props.dispatch(actions.moveAction({id: props.card, target: zone.id}));
+                    props.dispatch(actions.menuCancelAction());
+                }
+            }
+        })
+    })()
+}};
 
 let emptyMenu = [
     {text:'empty'}
 ];
 
 let Menu = (props) => {
-    let menuData = menuTypes[props.menuType] || emptyMenu;
+    let menuData = menuTypes(props)[props.menuType] || emptyMenu;
+    
     let style = {
       transform: `translate(${props.pos.x}px, ${props.pos.y}px)`
     };
     let menuChild = undefined;
     if(props.child) {
-        menuChild = <ActiveMenu {...props.child} key={props.id+'sub'}></ActiveMenu>;
+        menuChild = <ActiveMenu {...props.child}></ActiveMenu>;
     }
     
     return (
         <div className='menu' style={style}>
             {menuData.map((line, i) => {
-                let handlers = {};
-                if(line.click) handlers.onMouseDown = line.click(props);
-                if(line.over) handlers.onMouseEnter = line.over(props);
-                if(line.out) handlers.onMouseLeave = line.out(props);
+                // submenu is a child of the menu option that created it (so that mouseOver works correctly)
                 if(props.child && i === props.child.index) {
-                    return <div {...handlers} key={i}>{line.text}{menuChild}</div>;
+                    return <div {...line} key={i}>{line.text}{menuChild}</div>;
                 } else {
-                    return <div {...handlers} key={i}>{line.text}</div>;
+                    return <div {...line} key={i}>{line.text}</div>;
                 }
             })}
         </div>
     );
 };
 
-let ActiveMenu = redux.connect()(Menu);
+let ActiveMenu = redux.connect(
+    (state => {
+        return {
+            zones: state.zones
+        }
+    }))(Menu);
 
-module.exports = ActiveMenu;
+module.exports.Menu = ActiveMenu;
+module.exports.doDefaultAction = (props) => {
+    let menuData = menuTypes(props)[props.menuType] || emptyMenu;
+    menuData[0].onMouseDown();
+};

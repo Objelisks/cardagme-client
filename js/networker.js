@@ -16,6 +16,12 @@ module.exports.connect = (host) => {
         
         // listen for events
         
+        
+        // start game
+        
+        // get a deck
+        // draw some cards
+        
         resolve();
     });
 };

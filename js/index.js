@@ -7,6 +7,11 @@ let store = require('./store.js');
 let GameArea = require('../com/gameArea.js');
 
 
+let host = 'localhost:8082';
+
+let networker = require('../js/networker.js');
+networker.connect(host, store);
+
 ReactDOM.render(
     <Provider store={store}><GameArea></GameArea></Provider>,
     document.getElementById('cardgame')

@@ -14,12 +14,13 @@ let Deck = (props) => {
         'className': 'deck ' + (props.className || ''),
         'style': style
     };
-        
+    
+    // todo: render a number of cards, don't map actual card ids to card divs
     if(topCard) { // deck has at least one card in it
         return (
             <div {...deckProps} >
-                {restCards.map((card, i) => <Card key={card.id} card={card} style={{top: -i*2+8, left: -i*2+8}}></Card>)}
-                <DraggableCard key={topCard.id} card={topCard} pos={{y: -restCards.length*2+8, x: -restCards.length*2+8}}></DraggableCard>
+                {restCards.map((card, i) => <Card key={card.id} card={card} zone={props} style={{top: -i*2+8, left: -i*2+8}}></Card>)}
+                <DraggableCard key={topCard.id} card={topCard} zone={props} pos={{y: -restCards.length*2+8, x: -restCards.length*2+8}}></DraggableCard>
                 <p>deck</p>
             </div>
         );

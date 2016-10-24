@@ -33,7 +33,7 @@ let Draggable = ChildClass => React.createClass({
             y: data.y
         });
         
-        // get the zone we dragged into
+        // get the zone we dragged into (todo: make this nicer?)
         // hide the dragged card
         let target = e.target;
         let oldVis = target.style.visibility;

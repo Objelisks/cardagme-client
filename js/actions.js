@@ -1,25 +1,15 @@
 let actionTypes = require('./actionTypes.js');
 
-module.exports.moveAction = (props) => {
-    return Object.assign({
-        type: actionTypes.MOVE,
-    }, props);
+let genericAction = (type) => {
+    return (props) => {
+        return Object.assign({
+            type: type,
+        }, props);
+    };
 };
 
-module.exports.menuAction = (props) => {
-    return Object.assign({
-        type: actionTypes.MENU,
-    }, props);
-};
-
-module.exports.menuChildAction = (props) => {
-    return Object.assign({
-        type: actionTypes.MENU_CHILD,
-    }, props);
-};
-
-module.exports.menuCancelAction = (props) => {
-    return Object.assign({
-        type: actionTypes.MENU_CANCEL,
-    }, props);
-};
+module.exports.moveAction = genericAction(actionTypes.MOVE);
+module.exports.menuAction = genericAction(actionTypes.MENU);
+module.exports.menuChildAction = genericAction(actionTypes.MENU_CHILD);
+module.exports.menuCancelAction = genericAction(actionTypes.MENU_CANCEL);
+module.exports.cardPreviewAction = genericAction(actionTypes.CARD_PREVIEW);
