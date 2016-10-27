@@ -1,10 +1,10 @@
-let React = require('react');
-let redux = require('react-redux');
-let Card = require('./card.js');
-let {DraggableCore} = require('react-draggable');
-let {Motion, spring} = require('react-motion');
+import React from 'react';
+import {connect} from 'react-redux';
+import Card from './card.js';
+import {DraggableCore} from 'react-draggable';
+import {Motion, spring} from 'react-motion';
 
-let {moveAction} = require('../js/actions.js');
+import actions from '../js/actions.js';
 
 let resetSpring = {stiffness: 100, damping: 20};
 let dragSpring = {stiffness: 500, damping: 50};
@@ -48,7 +48,8 @@ let Draggable = ChildClass => React.createClass({
         
         // if we found a zone, move the dragged card to it
         if(element && element.classList && element.classList.contains('zone')) {
-            this.props.dispatch(moveAction({id: target.getAttribute('data-gameid'), target: element.getAttribute('data-gameid')}));
+            let action = actions.moveCardAction({id: target.getAttribute('data-gameid'), target: element.getAttribute('data-gameid')});
+            this.props.dispatch(action);
         }
     },
     render: function() {
@@ -78,7 +79,7 @@ let Draggable = ChildClass => React.createClass({
                 {({translateX, translateY}) => {
                     return (
                     <DraggableCore {...dragHandlers}>
-                        <ChildClass {...this.props} className={classes.join(' ')} style={{
+                        <ChildClass {...this.props} held={this.state.dragging} className={classes.join(' ')} style={{
                                 transform: `translate(${translateX}px, ${translateY}px)`,
                                 WebkitTransform: `translate(${translateX}px, ${translateY}px)`
                             }}>
@@ -90,6 +91,6 @@ let Draggable = ChildClass => React.createClass({
     }
 });
 
-let DraggableCard = redux.connect()(Draggable(Card));
+let DraggableCard = connect()(Draggable(Card));
 
-module.exports.DraggableCard = DraggableCard;
+export default DraggableCard;

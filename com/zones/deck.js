@@ -1,11 +1,11 @@
-let React = require('react');
-let Card = require('../card.js');
-let DraggableCard = require('../drag.js').DraggableCard;
+import React from 'react';
+import Card from '../card.js';
+import DraggableCard from '../drag.js';
 
 let Deck = (props) => {
     let cards = props.cards;
-    let topCard = cards[0];
-    let restCards = cards.slice(1);
+    let topCard = cards[cards.length-1];
+    let restCards = cards.slice(0, cards.length-1);
     
     let style = props.pos ? {left: props.pos.x, top: props.pos.y, position: 'absolute'} : {};
         
@@ -19,8 +19,8 @@ let Deck = (props) => {
     if(topCard) { // deck has at least one card in it
         return (
             <div {...deckProps} >
-                {restCards.map((card, i) => <Card key={card.id} card={card} zone={props} style={{top: -i*2+8, left: -i*2+8}}></Card>)}
-                <DraggableCard key={topCard.id} card={topCard} zone={props} pos={{y: -restCards.length*2+8, x: -restCards.length*2+8}}></DraggableCard>
+                {restCards.map((card, i) => <Card key={card.id} {...card} zone={props} style={{top: -i*2+8, left: -i*2+8}}></Card>)}
+                <DraggableCard key={topCard.id} {...topCard} zone={props} pos={{y: -restCards.length*2+8, x: -restCards.length*2+8}}></DraggableCard>
                 <p>deck</p>
             </div>
         );
@@ -33,4 +33,4 @@ let Deck = (props) => {
     }
 };
 
-module.exports = Deck;
+export default Deck;

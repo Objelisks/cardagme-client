@@ -1,8 +1,8 @@
-let React = require('react');
-let redux = require('react-redux');
-let actions = require('../js/actions.js');
+import React from 'react';
+import {connect} from 'react-redux';
+import actions from '../js/actions.js';
 
-let menuWidth = 84;
+let menuWidth = 86;
 let menuItemHeight = 20;
 
 let changeZone = (props) => {
@@ -13,7 +13,7 @@ let changeZone = (props) => {
                 id: props.id,
                 card: props.card,
                 index: 1,
-                pos: {x: menuWidth, y: -3 - menuItemHeight},
+                pos: {x: menuWidth, y: -menuItemHeight},
                 zones: props.zones,
                 menuType: 'zone-context'}));
         },
@@ -25,7 +25,8 @@ let changeZone = (props) => {
         onMouseDown: (e) => {
             e.preventDefault();
             e.stopPropagation();
-        }};
+        }
+    };
 };
 
 let menuTypes = (props) => {
@@ -34,6 +35,8 @@ let menuTypes = (props) => {
         {text:'play card',
         onMouseDown: (e) => {
             console.log('play card', props.card);
+            props.dispatch(actions.menuCancelAction());
+            e.stopPropagation();
         }, default: true},
         
         changeZone(props),
@@ -41,6 +44,8 @@ let menuTypes = (props) => {
         {text:'reveal card',
         onMouseDown: (e) => {
             console.log('reveal card', props.card);
+            props.dispatch(actions.menuCancelAction());
+            e.stopPropagation();
         }}
     ],
     
@@ -50,7 +55,9 @@ let menuTypes = (props) => {
             console.log('draw card');
             // gets first hand zone (todo: get first hand zone owned by player)
             let handZoneId = Object.keys(props.zones).filter(id => props.zones[id].type === 'hand')[0];
-            props.dispatch(actions.moveAction({id: props.card, target: handZoneId}));
+            props.dispatch(actions.moveCardAction({id: props.card, target: handZoneId}));
+            props.dispatch(actions.menuCancelAction());
+            e.stopPropagation();
         }, default: true},
         
         changeZone(props),
@@ -58,6 +65,8 @@ let menuTypes = (props) => {
         {text:'shuffle deck',
         onMouseDown: (e) => {
             console.log('shuffle deck');
+            props.dispatch(actions.menuCancelAction());
+            e.stopPropagation();
         }}
     ],
     
@@ -71,8 +80,9 @@ let menuTypes = (props) => {
                 text: zone.name,
                 onMouseDown: (e) => {
                     console.log(`card ${props.card} to ${zone.name}`);
-                    props.dispatch(actions.moveAction({id: props.card, target: zone.id}));
+                    props.dispatch(actions.moveCardAction({id: props.card, target: zone.id}));
                     props.dispatch(actions.menuCancelAction());
+                    e.stopPropagation();
                 }
             }
         })
@@ -108,15 +118,19 @@ let Menu = (props) => {
     );
 };
 
-let ActiveMenu = redux.connect(
+let ActiveMenu = connect(
     (state => {
         return {
             zones: state.zones
         }
     }))(Menu);
 
-module.exports.Menu = ActiveMenu;
-module.exports.doDefaultAction = (props) => {
+let doDefaultAction = (props) => {
     let menuData = menuTypes(props)[props.menuType] || emptyMenu;
     menuData[0].onMouseDown();
 };
+
+export {
+    ActiveMenu as Menu,
+    doDefaultAction
+}

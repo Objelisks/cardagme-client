@@ -1,28 +1,47 @@
- let webpack = require('webpack');
+let webpack = require('webpack');
+let path = require('path');
  
- module.exports = {
-     entry: './js/index.js',
-     output: {
+module.exports = {
+    entry: {
+        'commons': [
+            'react',
+            'react-dom',
+            'react-redux'
+        ],
+        'app.bundle': './js/index.js'
+    },
+    output: {
         path: './static/bin',
         filename: 'app.bundle.js'
-     },
-     module: {
+    },
+    module: {
         loaders: [{
-            test: /\.js/,
-            exclude: /node_modules/,
-            loader: 'babel-loader'
+            test: /\.js$/,
+            include: /(js|com)/,
+            loader: 'babel?cacheDirectory'
         }]
-     },
-     plugins: [
-        new webpack.DefinePlugin({
-          'process.env':{
-            'NODE_ENV': JSON.stringify('production')
-          }
+    },
+    plugins: [
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'commons',
+            filename: 'commons.js',
         }),
-     ],
-     externals: {
-         "react": "React",
-         "react-dom": "ReactDOM"
-     },
-     devtool: 'source-map'
- };
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false
+            }
+        }),
+        new webpack.optimize.DedupePlugin(),
+        new webpack.optimize.OccurenceOrderPlugin(),
+        new webpack.DefinePlugin({
+            'process.env':{
+                'NODE_ENV': JSON.stringify('production')
+            }
+        }),
+    ],
+    devtool: 'cheap-module-source-map',
+    devServer: {
+        contentBase: path.join(__dirname, 'static'),
+        quiet: true
+    }
+};

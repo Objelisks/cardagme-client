@@ -1,7 +1,7 @@
-let React = require('react');
-let Deck = require('./zones/deck.js');
-let Stack = require('./zones/stack.js');
-let Hand = require('./zones/hand.js');
+import React from 'react';
+import Deck from './zones/deck.js';
+import Stack from './zones/stack.js';
+import Hand from './zones/hand.js';
 
 let Zone = (props) => {
     let type = props.type;
@@ -23,4 +23,4 @@ let Zone = (props) => {
     );
 };
 
-module.exports = Zone;
+export default Zone;

@@ -1,29 +1,28 @@
-let redux = require('redux');
-let actions = require('./actionTypes.js');
+import {combineReducers} from 'redux';
+import actions from './actionTypes.js';
+import {menuId} from './ids.js';
 
 let initialCards = {
-   1: {id: '1', name:'hello'},
-   2: {id: '2', name:'hello'},
-   3: {id: '3', name:'hello'},
-   4: {id: '4', name:'hello'},
-   5: {id: '5', name:'hello'},
-   6: {id: '6', name:'hello'},
-   7: {id: '7', name:'hello'},
-   8: {id: '8', name:'hello'},
-   9: {id: '9', name:'hello'}
 };
 let initialZones = {
-   10: {id: '10', name:'deck', type:'deck', pos:{x: 100, y: 400}, cards: ['1', '2', '3', '4'], moveToAble: true},
-   11: {id: '11', name:'hand', type:'hand', pos:{x: 400, y: 450}, cards: ['5', '6', '7', '8', '9'], moveToAble: true}
+   10: {id: '10', name:'deck', type:'deck', pos:{x: 100, y: 400}, cards: [], moveToAble: true},
+   11: {id: '11', name:'hand', type:'hand', pos:{x: 400, y: 450}, cards: [], moveToAble: true}
 };
 let initialMenus = {
    // 12: {id: '12', menuType: 'card', pos:{x:100, y:200}}
 };
 
 let cards = (state = initialCards, action) => {
+   let newState = null;
    switch(action.type) {
+      
+      case actions.CARD_NEW:
+         newState = Object.assign({}, state,
+            {[action.id]: {id: action.id, card: action.card}});
+         return newState;
+         
       case actions.CARD_PREVIEW:
-         let newState = Object.assign({}, state,
+         newState = Object.assign({}, state,
             Object.keys(state).reduce((pre, cardId) => {
                if(!action.cancel && cardId === action.id) {
                   pre[cardId] = Object.assign({}, state[cardId], {preview: true});
@@ -34,13 +33,17 @@ let cards = (state = initialCards, action) => {
             }, {}));
          return newState;
    }
+   
    return state;
 };
 
 let zones = (state = initialZones, action) => {
+   let newState = null;
    switch(action.type) {
-      case actions.MOVE:
-         let newState = Object.assign({}, state, 
+      
+      case actions.CARD_NEW: // cardnew reuses same props from move to initialize position
+      case actions.CARD_MOVE:
+         newState = Object.assign({}, state, 
             Object.keys(state).reduce((pre, zoneId) => {
                let zone = state[zoneId];
                if(zoneId !== action.target) {
@@ -59,21 +62,13 @@ let zones = (state = initialZones, action) => {
    return state;
 };
 
-let genMenuId = (() => {
-  let id = 0;
-  return () => {
-     id += 1;
-     return `menu${id}`;
-  }
-})();
-
 let menus = (state = initialMenus, action) => {
    let newState, id;
    switch(action.type) {
       
-      case actions.MENU:
+      case actions.MENU_NEW:
          // open menu
-         id = action.id || genMenuId();
+         id = action.id || menuId();
          newState = Object.assign({}, state,
             {[id]: Object.assign({id: id}, action)});
          return newState;
@@ -98,9 +93,9 @@ let menus = (state = initialMenus, action) => {
    return state;
 };
 
-let reducer = redux.combineReducers({
+let reducer = combineReducers({
    cards, zones, menus
 });
 
 
-module.exports = reducer;
+export default reducer;

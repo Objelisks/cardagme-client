@@ -41,6 +41,7 @@ body {
     border: 1px dashed black;
     border-radius: 6px;
     text-align: center;
+    
     p {
         top: $cardHeight;
         position: relative;
@@ -58,16 +59,17 @@ body {
 
 .menu {
     position: absolute;
-    z-index: 999;
     border: 1px solid black;
     background-color: white;
     box-shadow: 6px 6px 6px rgba(0,0,0,0.5);
+    z-index: 999;
+    width: 90px;
     
     > div {
-        margin: 0;
+        margin: 0px;
         padding: 4px;
-        
         border-bottom: 1px dotted black;
+        
         &:last-child {
             border: none;
         }

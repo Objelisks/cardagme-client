@@ -1,4 +1,4 @@
-let actionTypes = require('./actionTypes.js');
+import actionTypes from './actionTypes.js';
 
 let genericAction = (type) => {
     return (props) => {
@@ -8,8 +8,11 @@ let genericAction = (type) => {
     };
 };
 
-module.exports.moveAction = genericAction(actionTypes.MOVE);
-module.exports.menuAction = genericAction(actionTypes.MENU);
-module.exports.menuChildAction = genericAction(actionTypes.MENU_CHILD);
-module.exports.menuCancelAction = genericAction(actionTypes.MENU_CANCEL);
-module.exports.cardPreviewAction = genericAction(actionTypes.CARD_PREVIEW);
+export default {
+    menuAction: genericAction(actionTypes.MENU_NEW),
+    menuChildAction: genericAction(actionTypes.MENU_CHILD),
+    menuCancelAction: genericAction(actionTypes.MENU_CANCEL),
+    previewCardAction: genericAction(actionTypes.CARD_PREVIEW),
+    newCardAction: genericAction(actionTypes.CARD_NEW),
+    moveCardAction: genericAction(actionTypes.CARD_MOVE)
+};

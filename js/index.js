@@ -1,15 +1,17 @@
-let React = require('react');
-let ReactDOM = require('react-dom');
+import 'babel-polyfill';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-let Provider = require('react-redux').Provider;
-let store = require('./store.js');
+import {Provider} from 'react-redux';
+import store from './store.js';
 
-let GameArea = require('../com/gameArea.js');
+import GameArea from '../com/gameArea.js';
+import networker from '../js/networker.js';
 
 
-let host = 'localhost:8082';
+//let host = 'https://localhost:8082';
+let host = 'https://' + window.location.hostname + ':8082';
 
-let networker = require('../js/networker.js');
 networker.connect(host, store);
 
 ReactDOM.render(

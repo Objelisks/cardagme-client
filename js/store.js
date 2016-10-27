@@ -1,4 +1,4 @@
-let redux = require('redux');
-let reducer = require('./reducer.js');
+import {createStore} from 'redux';
+import reducer from './reducer.js';
 
-module.exports = redux.createStore(reducer);
+export default createStore(reducer);
