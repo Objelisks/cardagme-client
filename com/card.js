@@ -8,7 +8,6 @@ let handleMenu = (props) => {
     return (e) => {
         if(e.button === 2) {
             // rightclick opens context menu
-            //let rect = e.target.getBoundingClientRect();
             props.dispatch(actions.menuAction({card: props.id, pos: {x: e.clientX, y: e.clientY}, menuType: props.zone.type}));
             e.preventDefault();
             e.stopPropagation();

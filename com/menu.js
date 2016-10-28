@@ -5,7 +5,7 @@ import actions from '../js/actions.js';
 let menuWidth = 86;
 let menuItemHeight = 23;
 
-let thingsToDo = {
+let gameActions = {
     playCard: (props) => {
         console.log('play', props.card);
         props.dispatch(actions.menuCancelAction());
@@ -19,6 +19,15 @@ let thingsToDo = {
     },
     revealCard: (props) => {
         console.log('reveal', props.card);
+        props.dispatch(actions.menuCancelAction());
+    },
+    shuffle: (props) => {
+        console.log('shuffle');
+        props.dispatch(actions.menuCancelAction());
+    },
+    moveCard: (props, zone) => {
+        console.log(`${props.card} to ${zone.name}`);
+        props.dispatch(actions.moveCardAction({id: props.card, target: zone.id}));
         props.dispatch(actions.menuCancelAction());
     }
 };
@@ -52,16 +61,16 @@ let menuTypes = (props) => {
     'hand': [
         {text:'play card',
         onMouseDown: (e) => {
-            thingsToDo.playCard();
+            gameActions.playCard(props);
             e.stopPropagation();
         },
-        defaultAction: thingsToDo.playCard},
+        defaultAction: gameActions.playCard},
 
         changeZone(props),
 
         {text:'reveal card',
         onMouseDown: (e) => {
-            thingsToDo.revealCard();
+            gameActions.revealCard(props);
             e.stopPropagation();
         }}
     ],
@@ -69,17 +78,16 @@ let menuTypes = (props) => {
     'deck': [
         {text:'draw card',
         onMouseDown: (e) => {
-            thingsToDo.drawCard();
+            gameActions.drawCard(props);
             e.stopPropagation();
         },
-        defaultAction: thingsToDo.drawCard},
+        defaultAction: gameActions.drawCard},
 
         changeZone(props),
 
         {text:'shuffle deck',
         onMouseDown: (e) => {
-            console.log('shuffle');
-            props.dispatch(actions.menuCancelAction());
+            gameActions.shuffle(props);
             e.stopPropagation();
         }}
     ],
@@ -87,17 +95,16 @@ let menuTypes = (props) => {
     'stack': [
         {text:'draw card',
         onMouseDown: (e) => {
-            thingsToDo.drawCard();
+            gameActions.drawCard(props);
             e.stopPropagation();
         },
-        defaultAction: thingsToDo.drawCard},
+        defaultAction: gameActions.drawCard},
 
         changeZone(props),
 
-        {text:'shuffle deck',
+        {text:'shuffle stack',
         onMouseDown: (e) => {
-            console.log('shuffle');
-            props.dispatch(actions.menuCancelAction());
+            gameActions.shuffle(props);
             e.stopPropagation();
         }}
     ],
@@ -112,9 +119,7 @@ let menuTypes = (props) => {
             return {
                 text: zone.name,
                 onMouseDown: (e) => {
-                    console.log(`${props.card} to ${zone.name}`);
-                    props.dispatch(actions.moveCardAction({id: props.card, target: zone.id}));
-                    props.dispatch(actions.menuCancelAction());
+                    gameActions.moveCard(props, zone);
                     e.stopPropagation();
                 }
             }

@@ -3,16 +3,17 @@ import actions from './actionTypes.js';
 import {menuId} from './ids.js';
 
 let initialCards = {
+    // 1: {id: 1, card: {...}, preview: true}
 };
 let initialZones = {
    1: {id: '1', name:'deck', type:'deck', pos:{x: 100, y: 400}, cards: [], moveToAble: true},
    2: {id: '2', name:'hand', type:'hand', pos:{x: 400, y: 450}, cards: [], moveToAble: true},
-   3: {id: '3', name:'stack 1', type:'stack', pos:{x: 200, y: 20}, cards: [], moveToAble: true},
-   4: {id: '4', name:'stack 2', type:'stack', pos:{x: 450, y: 20}, cards: [], moveToAble: true},
-   5: {id: '5', name:'stack 3', type:'stack', pos:{x: 700, y: 20}, cards: [], moveToAble: true},
+   3: {id: '3', name:'stack 1', type:'stack', pos:{x: 300, y: 20}, cards: [], moveToAble: true},
+   4: {id: '4', name:'stack 2', type:'stack', pos:{x: 550, y: 20}, cards: [], moveToAble: true},
+   5: {id: '5', name:'stack 3', type:'stack', pos:{x: 800, y: 20}, cards: [], moveToAble: true},
 };
 let initialMenus = {
-   // 12: {id: '12', menuType: 'card', pos:{x:100, y:200}}
+   // 12: {id: '12', menuType: 'deck', pos:{x:100, y:200}, child: {...}}
 };
 
 let cards = (state = initialCards, action) => {

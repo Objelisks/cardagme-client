@@ -3,20 +3,15 @@ import Deck from './zones/deck.js';
 import Stack from './zones/stack.js';
 import Hand from './zones/hand.js';
 
+let zones = {
+    'deck': Deck,
+    'stack': Stack,
+    'hand': Hand
+}
+
 let Zone = (props) => {
     let type = props.type;
-    let Element = Stack;
-    switch(type) {
-        case "deck":
-            Element = Deck;
-            break;
-        case "stack":
-            Element = Stack;
-            break;
-        case "hand":
-            Element = Hand;
-            break;
-    }
+    let Element = zones[type];
 
     return (
         <Element {...props} className={'zone ' + (props.className || '')}></Element>

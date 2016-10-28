@@ -1,9 +1,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import Card from './card.js';
 import {DraggableCore} from 'react-draggable';
 import {Motion, spring} from 'react-motion';
-
+import Card from './card.js';
 import actions from '../js/actions.js';
 
 let resetSpring = {stiffness: 100, damping: 20};
@@ -11,12 +10,12 @@ let dragSpring = {stiffness: 500, damping: 50};
 
 let Draggable = ChildClass => React.createClass({
     getInitialState: function() {
-        return {dragging: false, x: 0, y: 0};
+        return {dragging: false, dragStart: true, x: 0, y: 0};
     },
-
     onDrag: function(e, data) {
         this.setState({
-          dragging: true,
+            dragging: !this.state.dragStart,
+            dragStart: false,
             x: data.x,
             y: data.y
         });
@@ -24,6 +23,7 @@ let Draggable = ChildClass => React.createClass({
     onStop: function(e, data) {
         this.setState({
             dragging: false,
+            dragStart: true,
             x: data.x,
             y: data.y
         });
@@ -67,7 +67,7 @@ let Draggable = ChildClass => React.createClass({
             translateY: spring(y, settings)
         };
 
-        let dragHandlers = {onStart: this.onStart, onDrag: this.onDrag, onStop: this.onStop};
+        let dragHandlers = {onDrag: this.onDrag, onStop: this.onStop};
 
         return (
             <Motion style={style}>
