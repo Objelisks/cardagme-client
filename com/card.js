@@ -1,15 +1,15 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import actions from '../js/actions.js';
+import {doDefaultAction} from './menu.js';
 
-import {Menu} from './menu.js';
 
 let handleMenu = (props) => {
     return (e) => {
         if(e.button === 2) {
             // rightclick opens context menu
-            let rect = e.target.getBoundingClientRect();
-            props.dispatch(actions.menuAction({card: props.id, pos: {x: e.clientX-rect.left, y: e.clientY-rect.top}, menuType: props.zone.type}));
+            //let rect = e.target.getBoundingClientRect();
+            props.dispatch(actions.menuAction({card: props.id, pos: {x: e.clientX, y: e.clientY}, menuType: props.zone.type}));
             e.preventDefault();
             e.stopPropagation();
         }
@@ -17,7 +17,9 @@ let handleMenu = (props) => {
 };
 
 let handleActivate = (props) => {
-    // todo: recognize a double click?
+    return (e) => {
+        doDefaultAction({dispatch: props.dispatch, menuType: props.zone.type, zones: props.zones, card: props.id});
+    };
 };
 
 let handlePreviewEnter = (props) => {
@@ -29,23 +31,19 @@ let handlePreviewEnter = (props) => {
 let handlePreviewLeave = (props) => {
     return (e) => {
         if(!props.held) {
-            props.dispatch(actions.previewCardAction({id: props.id, cancel: true}));
+            props.dispatch(actions.previewCardAction({cancel: true}));
         }
     };
 };
 
 let Card = (props) => {
     let handlers = {
+        onDoubleClick: handleActivate(props),
         onMouseEnter: handlePreviewEnter(props),
         onMouseLeave: handlePreviewLeave(props),
         onContextMenu: handleMenu(props)
     };
-    
-    let menuElements = Object.keys(props.menus).filter(menuId => props.menus[menuId].card === props.id).map(menuId => {
-        let menu = props.menus[menuId];
-        return <Menu {...menu} key={menu.id}></Menu>;
-    });
-    
+
     if(props.isPreview) {
         return (
             <div {...props} data-gameid={props.id} className={'card ' + (props.className || '')}>
@@ -55,7 +53,6 @@ let Card = (props) => {
     } else {
         return (
             <div {...props} {...handlers} data-gameid={props.id} className={'card ' + (props.className || '')}>
-                {menuElements}
                 {props.card.name}
             </div>
         );
@@ -63,9 +60,7 @@ let Card = (props) => {
 };
 
 let ActiveCard = connect((state) => {
-    return {
-        menus: state.menus
-    };
+    return {zones: state.zones}
 })(Card);
 
 export default ActiveCard;

@@ -1,6 +1,6 @@
 let webpack = require('webpack');
 let path = require('path');
- 
+
 module.exports = {
     entry: {
         'commons': [
@@ -39,7 +39,7 @@ module.exports = {
             }
         }),
     ],
-    devtool: 'cheap-module-source-map',
+    devtool: 'source-map',
     devServer: {
         contentBase: path.join(__dirname, 'static'),
         quiet: true

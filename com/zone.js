@@ -17,7 +17,7 @@ let Zone = (props) => {
             Element = Hand;
             break;
     }
-    
+
     return (
         <Element {...props} className={'zone ' + (props.className || '')}></Element>
     );

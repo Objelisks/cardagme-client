@@ -10,7 +10,7 @@ import networker from '../js/networker.js';
 
 
 //let host = 'https://localhost:8082';
-let host = 'https://' + window.location.hostname + ':8082';
+let host = 'http://' + window.location.hostname + ':8082';
 
 networker.connect(host, store);
 

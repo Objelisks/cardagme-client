@@ -1,3 +1,5 @@
 static/bin/*
 static/style/index.css
 static/style/index.css.map
+node_modules/
+.sass-cache/

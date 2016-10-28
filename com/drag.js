@@ -13,15 +13,10 @@ let Draggable = ChildClass => React.createClass({
     getInitialState: function() {
         return {dragging: false, x: 0, y: 0};
     },
-    onStart: function(e, data) {
-        this.setState({
-            dragging: true,
-            x: data.x,
-            y: data.y
-        });
-    },
+
     onDrag: function(e, data) {
         this.setState({
+          dragging: true,
             x: data.x,
             y: data.y
         });
@@ -32,7 +27,7 @@ let Draggable = ChildClass => React.createClass({
             x: data.x,
             y: data.y
         });
-        
+
         // get the zone we dragged into (todo: make this nicer?)
         // hide the dragged card
         let target = e.target;
@@ -45,7 +40,7 @@ let Draggable = ChildClass => React.createClass({
             element = element.parentNode;
         }
         target.style.visibility = oldVis;
-        
+
         // if we found a zone, move the dragged card to it
         if(element && element.classList && element.classList.contains('zone')) {
             let action = actions.moveCardAction({id: target.getAttribute('data-gameid'), target: element.getAttribute('data-gameid')});
@@ -57,7 +52,7 @@ let Draggable = ChildClass => React.createClass({
         let offset = {x: 125, y: 175};
         let settings = resetSpring;
         let classes = (this.props.className || "").split(' ');
-        
+
         if(this.state.dragging) {
             x = this.state.x - offset.x;
             y = this.state.y - offset.y;
@@ -66,23 +61,23 @@ let Draggable = ChildClass => React.createClass({
         } else {
             classes.push('draggable');
         }
-        
+
         let style = {
             translateX: spring(x, settings),
             translateY: spring(y, settings)
         };
-        
+
         let dragHandlers = {onStart: this.onStart, onDrag: this.onDrag, onStop: this.onStop};
-        
+
         return (
             <Motion style={style}>
                 {({translateX, translateY}) => {
                     return (
                     <DraggableCore {...dragHandlers}>
-                        <ChildClass {...this.props} held={this.state.dragging} className={classes.join(' ')} style={{
+                        <ChildClass {...this.props} held={this.state.dragging} className={classes.join(' ')} style={Object.assign({
                                 transform: `translate(${translateX}px, ${translateY}px)`,
                                 WebkitTransform: `translate(${translateX}px, ${translateY}px)`
-                            }}>
+                            }, this.props.style)}>
                         </ChildClass>
                     </DraggableCore>
                 )}}

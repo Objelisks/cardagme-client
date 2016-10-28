@@ -21,6 +21,7 @@ body {
     height: $cardHeight;
     background-color: #fff;
     z-index: 1;
+    cursor: default;
 }
 
 .draggable {
@@ -37,15 +38,24 @@ body {
     z-index: 100;
 }
 
+.preview {
+    transform: scale(1.2, 1.2) translate(20px, 20px);
+}
+
 .zone {
     border: 1px dashed black;
     border-radius: 6px;
     text-align: center;
-    
+
     p {
         top: $cardHeight;
         position: relative;
     }
+}
+
+.stack {
+    width: $cardWidth + 20px;
+    height: $cardHeight + 20px;
 }
 
 .deck {
@@ -64,16 +74,16 @@ body {
     box-shadow: 6px 6px 6px rgba(0,0,0,0.5);
     z-index: 999;
     width: 90px;
-    
+
     > div {
         margin: 0px;
         padding: 4px;
         border-bottom: 1px dotted black;
-        
+
         &:last-child {
             border: none;
         }
-        
+
         &:hover {
             background-color: $primary;
             cursor: pointer;
